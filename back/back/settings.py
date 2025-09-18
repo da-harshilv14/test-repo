@@ -32,12 +32,13 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    "corsheaders",
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'loginSignup',
+    "loginSignup",
     "rest_framework",
 
 ]
@@ -45,6 +46,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    
 }
 
 MIDDLEWARE = [
@@ -55,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",  
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'back.urls'
@@ -73,7 +77,18 @@ TEMPLATES = [
         },
     },
 ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+]
 
+# If testing, you can allow all (not safe for prod)
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+]
 WSGI_APPLICATION = 'back.wsgi.application'
 
 
@@ -128,5 +143,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = "accounts.CustomUser"
+AUTH_USER_MODEL = "loginSignup.CustomUser"
 

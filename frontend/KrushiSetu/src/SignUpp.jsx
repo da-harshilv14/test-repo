@@ -14,23 +14,31 @@ function Signupp() {
   // Signup states
   const [fullName, setFullName] = useState('');
   const [password2, setPassword2] = useState('');
-  const [mobileNo, setMobileNo] = useState('');
-  const [emailAddr, setEmailAddr] = useState('');
+  const [mobileEmail, setMobileEmail] = useState('');
+  const [aadhaar, setAadhaar] = useState('');
 
+  // ✅ REGISTER HANDLER
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      if (password === password2 && password.length > 8) {
-        const response = await axios.post("http://127.0.0.1:8000/accounts/api/register/", {
-          fullname: fullName,
-          email: emailAddr,
-          phoneno: mobileNo,
+      if (password === password2 && password.length >= 8) {
+        const response = await axios.post("http://127.0.0.1:8000/api/signup/", {
+          full_name: fullName,
+          mobile_email: mobileEmail,   // can be phone or email
+          aadhaar_number: aadhaar || "",
           password: password,
+          confirm_password: password2,
+
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+          }
         });
         console.log('Register successfully.', response.data);
         alert("Registration Success!");
+        setPage("login");
       } else {
-        alert("Passwords do not match or password too short.");
+        alert("Passwords do not match or password too short (min 8 chars).");
       }
     } catch (error) {
       console.error("Register failed:", error.response?.data || error.message);
@@ -38,23 +46,25 @@ function Signupp() {
     }
   };
 
+  // ✅ LOGIN HANDLER
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("http://127.0.0.1:8000/accounts/login/", {
-        emailOrPhone,
-        password,
+      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
+        mobile_email: emailOrPhone,  // backend expects "mobile_email"
+        password: password,
       });
 
       console.log("Login success:", response.data);
 
+      // Save tokens
       localStorage.setItem("access", response.data.access);
       localStorage.setItem("refresh", response.data.refresh);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
 
+      alert("Login Success!");
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
+      alert("Login failed!");
     }
   };
 
@@ -140,19 +150,18 @@ function Signupp() {
               />
               <input
                 className="w-full p-2 mb-3 rounded-md bg-white border"
-                type="email"
-                placeholder="Email"
-                value={emailAddr}
-                onChange={(e) => setEmailAddr(e.target.value)}
+                type="text"
+                placeholder="Mobile Number / Email"
+                value={mobileEmail}
+                onChange={(e) => setMobileEmail(e.target.value)}
                 required
               />
               <input
                 className="w-full p-2 mb-3 rounded-md bg-white border"
                 type="text"
-                placeholder="Mobile Number"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
-                required
+                placeholder="Aadhaar Number (Optional)"
+                value={aadhaar}
+                onChange={(e) => setAadhaar(e.target.value)}
               />
               <input
                 className="w-full p-2 mb-3 rounded-md bg-white border"
@@ -183,16 +192,6 @@ function Signupp() {
                 type="submit"
                 value="Create Account"
               />
-            </div>
-
-            <div className="flex items-center">
-              <hr className="border-t-2 w-25 ml-4" />
-              <p className="ml-4 mr-2">Or continue with</p>
-              <hr className="border-t-2 w-26 ml-2" />
-            </div>
-            <div className="flex justify-around pt-2">
-              <img className="w-8 h-8" src="/Google_Logo.svg" alt="Google Logo" />
-              <img className="w-10 h-10" src="/DigiLocker_Logo.png" alt="DigiLocker Logo" />
             </div>
           </form>
         )}
