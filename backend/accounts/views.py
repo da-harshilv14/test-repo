@@ -1,13 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import generics, permissions, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSignupSerializer
 from .models import CustomUser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from .serializers import UserSignupSerializer
 from rest_framework import serializers
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 
 class FarmerSignupView(generics.CreateAPIView):
@@ -52,6 +55,17 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+
+class CustomLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = CustomTokenObtainPairSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+
 @api_view(['POST'])
 def register_user(request):
     serializer = UserSignupSerializer(data=request.data)
@@ -70,3 +84,8 @@ def login_user(request):
     if user:
         return Response({"message": "Login successful", "user": UserSerializer(user).data})
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+# def login_view(request):
+#     else:
+#         return render(request, 'home.html')

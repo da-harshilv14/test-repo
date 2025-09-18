@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 import SignUpp from './SignUpp.jsx'
 import Hello from './Hello.jsx'
 import Signup from './Signup.jsx'
+import Try from './Try.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

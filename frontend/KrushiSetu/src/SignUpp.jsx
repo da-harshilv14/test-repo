@@ -40,17 +40,21 @@ function Signupp() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post("http://127.0.0.1:8000/accounts/api/login/", {
-        email: emailOrPhone,
-        password: password,
-        role: role,
+      const response = await axios.post("http://127.0.0.1:8000/accounts/login/", {
+        emailOrPhone,
+        password,
       });
-      console.log("Login successful:", response.data);
-      alert("Login success!");
+
+      console.log("Login success:", response.data);
+
+      localStorage.setItem("access", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
-      alert("Login failed!");
     }
   };
 
