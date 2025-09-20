@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+.signup-bg {
+  position: relative;
+  background-image: url('./assets/download.jpeg');
+  overflow: hidden;
+}
+
+.signup-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/download.jpeg');
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  z-index: 0;
+}
+
+.signup-bg > * {
+  position: relative;
+  z-index: 1;
+}

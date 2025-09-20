@@ -40,14 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "loginSignup",
     "rest_framework",
+    "rest_framework_simplejwt",
+    'phonenumber_field',
 
 ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "loginSignup.authentication.CookieJWTAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    
+    ),    
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",  
     "django.middleware.common.CommonMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'back.urls'
@@ -77,6 +81,8 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
@@ -88,6 +94,10 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_HEADERS = [
     "content-type",
     "authorization",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
 ]
 WSGI_APPLICATION = 'back.wsgi.application'
 
@@ -143,5 +153,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = "loginSignup.CustomUser"
+
+AUTH_USER_MODEL = "loginSignup.User"
+
+PHONENUMBER_DEFAULT_REGION = 'IN'
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
 

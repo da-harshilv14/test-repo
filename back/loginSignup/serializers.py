@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import User
 
 class UserSignupSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
-
     class Meta:
-        model = CustomUser
-        fields = ["full_name", "mobile_email", "aadhaar_number", "password", "confirm_password"]
+        model = User
+        fields = ["full_name", "email_address", "mobile_number", "aadhaar_number", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate(self, data):
-        if data["password"] != data["confirm_password"]:
-            raise serializers.ValidationError("Passwords do not match")
+        # Ensure at least one of email or mobile is provided
+        if not data.get("email_address") or not data.get("mobile_number"):
+            raise serializers.ValidationError("You must provide either an email address and a mobile number")
+
         return data
 
     def create(self, validated_data):
-        validated_data.pop("confirm_password")
-        return CustomUser.objects.create_user(**validated_data)
+        return User.objects.create_user(**validated_data)
